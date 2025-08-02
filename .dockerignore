@@ -1,0 +1,11 @@
+*.md
+*.pdf
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.git
+.gitignore
+README.md
+Wealth Report*
+unprotected.pdf
