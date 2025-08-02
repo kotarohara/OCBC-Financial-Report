@@ -4,12 +4,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Python project focused on PDF to Markdown conversion and data extraction from financial documents. The project consists of two main utilities for processing PDF documents, particularly bank/wealth reports.
+This is a Python project focused on PDF to Markdown conversion and data extraction from financial documents. The project is organized with a backend/ directory containing the Python API service, preparing for future frontend integration.
+
+## Directory Structure
+
+```
+/
+├── backend/           # Python API service
+│   ├── app.py        # Flask REST API
+│   ├── pdf2markdown.py
+│   ├── format_markdown.py
+│   ├── requirements.txt
+│   └── uploads/      # Temporary file storage
+├── Dockerfile        # Docker configuration
+├── docker-compose.yml
+└── CLAUDE.md
+```
 
 ## Key Files and Architecture
 
-- `pdf2markdown.py`: Handles PDF password removal and conversion to markdown using PyPDF2 and MarkItDown
-- `format_markdown.py`: Uses Anthropic's Claude API to extract and organize table data from markdown content
+- `backend/pdf2markdown.py`: Handles PDF password removal and conversion to markdown using PyPDF2 and MarkItDown
+- `backend/format_markdown.py`: Uses Anthropic's Claude API to extract and organize table data from markdown content
+- `backend/app.py`: Flask REST API service providing endpoints for PDF processing
 
 The workflow is typically:
 1. Use `pdf2markdown.py` to convert protected PDF → unprotected PDF → markdown
@@ -32,14 +48,16 @@ The project requires:
 
 ### PDF to Markdown Conversion
 ```bash
+cd backend
 python pdf2markdown.py
 ```
-- Expects a file named 'Wealth Report-5728-Jun-25.pdf' in the root directory
+- Expects a file named 'Wealth Report-5728-Jun-25.pdf' in the backend directory
 - Creates an unprotected PDF and corresponding .md file
 - Update the `pdf_filename` variable for different input files
 
 ### Markdown Formatting and Data Extraction
 ```bash
+cd backend
 python format_markdown.py
 ```
 - Processes 'Wealth Report-5728-Jun-25.md' by default
@@ -58,7 +76,7 @@ docker-compose up --build
 
 # Or build and run manually
 docker build -t pdf-to-markdown .
-docker run -p 5000:5000 --env-file .env pdf-to-markdown
+docker run -p 5001:5001 --env-file .env pdf-to-markdown
 ```
 
 ### API Endpoints
@@ -71,13 +89,13 @@ docker run -p 5000:5000 --env-file .env pdf-to-markdown
 
 ```bash
 # Process PDF with both raw and organized output
-curl -X POST -F "file=@document.pdf" http://localhost:5000/process-pdf
+curl -X POST -F "file=@document.pdf" http://localhost:5001/process-pdf
 
 # Process password-protected PDF
-curl -X POST -F "file=@document.pdf" -F "password=mypassword" http://localhost:5000/process-pdf
+curl -X POST -F "file=@document.pdf" -F "password=mypassword" http://localhost:5001/process-pdf
 
 # Get only raw markdown
-curl -X POST -F "file=@document.pdf" http://localhost:5000/process-pdf/raw
+curl -X POST -F "file=@document.pdf" http://localhost:5001/process-pdf/raw
 ```
 
 ### Environment Configuration

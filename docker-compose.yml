@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./uploads:/tmp/uploads
+      - ./backend/uploads:/tmp/uploads
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
